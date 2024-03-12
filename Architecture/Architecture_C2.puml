@@ -1,0 +1,72 @@
+@startuml Architecture_C2
+' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!include <C4/C4_Component>
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/react.puml
+!include DEVICONS/java.puml
+!include DEVICONS/dotnet.puml
+!include DEVICONS/msql_server.puml
+!include DEVICONS/mongodb.puml
+!include FONTAWESOME/users.puml
+
+Person(user, "User", "User of the application", $sprite="users")
+
+Container(frontend, "Frontend", "react", "Frontend user interface", $sprite="react")
+
+Container(api, "API", "ASP.NET", "API gateway", $sprite="dotnet")
+
+System_Boundary(ms, "Microservices", " "){
+Container(accservice, "AccountService", "ASP.NET", "User information", $sprite="dotnet")
+Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="dotnet")
+Container(socialservice, "SocialService", "ASP.NET", "Friends & Messaging", $sprite="dotnet")
+
+Container(threadservice, "ThreadService", "ASP.NET", "Threads", $sprite="dotnet")
+Container(postservice, "PostService", "ASP.NET", "Posts", $sprite="dotnet")
+Container(commentservice, "CommentService", "ASP.NET", "Comments", $sprite="dotnet")
+
+Container(imageservice, "ImageService", "Node.js", "Images", $sprite="java")
+}
+
+ContainerDb(userdb, "UserDB", "Microsoft SQL", "User information and profiles", $sprite="msql_server")
+ContainerDb(aadb, "AuthDB", "Microsoft SQL", "Credentials, sessions", $sprite="msql_server")
+ContainerDb(socialdb, "SocialDB", "MongoDB", "Friends, messages", $sprite="mongodb")
+ContainerDb(threaddb, "ThreadDB", "MongoDB", "Threads", $sprite="mongodb")
+ContainerDb(postdb, "PostDB", "MongoDB", "Posts", $sprite="mongodb")
+ContainerDb(commentdb, "CommentDB", "MongoDB", "Comments", $sprite="mongodb")
+ContainerDb(imagedb, "ImageDB", "File Storage", "Image storage")
+' Images public available in blob storage
+' Image gets stored by api, returns link for image
+Component(mq, "RabbitMQ", "ASP.NET", "MessageBroker")
+
+Rel_R(user, frontend, "Uses", "https")
+
+Rel_R(frontend, api, "Uses", "https")
+
+Rel(api, accservice, "???", "???")
+Rel(api, authservice, "???", "???")
+Rel(api, socialservice, "???", "???")
+Rel(api, threadservice, "???", "???")
+Rel(api, postservice, "???", "???")
+Rel(api, commentservice, "???", "???")
+Rel(api, imageservice, "???", "???")
+
+Rel(accservice, userdb, "Reads/Writes")
+Rel(authservice, aadb, "Reads/Writes")
+Rel(socialservice, socialdb, "Reads/Writes")
+Rel(threadservice, threaddb, "Reads/Writes")
+Rel(postservice, postdb, "Reads/Writes")
+Rel(commentservice, commentdb, "Reads/Writes")
+Rel(imageservice, imagedb, "Reads/Writes")
+
+Rel(mq, ms, "Uses", "Async")
+' BiRel(mq, accservice, "???", "???")
+' BiRel(mq, authservice, "???", "???")
+' BiRel(mq, socialapi, "???", "???")
+' BiRel(mq, threadapi, "???", "???")
+' BiRel(mq, postapi, "???", "???")
+' BiRel(mq, commentapi, "???", "???")
+
+SHOW_LEGEND()
+@enduml

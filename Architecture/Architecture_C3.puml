@@ -1,0 +1,49 @@
+@startuml Architecture_C3
+' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!include <C4/C4_Component>
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/react.puml
+!include DEVICONS/java.puml
+!include DEVICONS/dotnet.puml
+!include DEVICONS/msql_server.puml
+!include FONTAWESOME/users.puml
+
+
+System_Boundary(1,"User API"){
+    Component(authentication, "User authentication", "Controller")
+    Component(authorization, "User authorization", "Controller")
+    Component(management, "User management", "Controller")
+    Component(messaging, "Friend messaging", "Controller")
+}
+System_Boundary(2,"Post API"){
+    Component(threads, "Threads", "Controller")
+    Component(posts, "Posts", "Controller")
+    Component(comments, "Comments", "Controller")
+}
+System_Boundary(3,"Image API"){
+    Component(upload, "Image upload", "Controller")
+    Component(retrieve, "Image retrieval", "Controller")
+    Component(delete, "Image deletion", "Controller")
+}
+
+
+' Container(userapi, "API", "ASP.NET", "User information and authentication & authorization", $sprite="dotnet")
+' Container(postapi, "API", "ASP.NET", "Threads, posts and comments", $sprite="dotnet")
+' Container(imageapi, "API", "ASP.NET", "Images", $sprite="dotnet")
+
+' ContainerDb(userdb, "UserDB", "Microsoft SQL", "User information and profiles", $sprite="msql_server")
+' ContainerDb(postdb, "PostDB", "Microsoft SQL", "Threads, posts and comments", $sprite="msql_server")
+' ContainerDb(imagedb, "ImageDB", "File Storage", "Image storage")
+
+' Rel(api, userapi, "???", "???")
+' Rel(api, postapi, "???", "???")
+' Rel(api, imageapi, "???", "???")
+
+' Rel(userapi, userdb, "Reads/Writes")
+' Rel(postapi, postdb, "Reads/Writes")
+' Rel(imageapi, imagedb, "Reads/Writes")
+
+SHOW_LEGEND()
+@enduml

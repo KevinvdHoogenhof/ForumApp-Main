@@ -1,0 +1,18 @@
+@startuml Architecture_C1
+' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!include <C4/C4_Component>
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include FONTAWESOME/users.puml
+
+Person(user, "User", "User of the application", $sprite="users")
+Person(admin, "Admin", "Manages the application")
+
+Container(system, "Forum application", "Software system", "Allows users to view various threads and posts and interact with other users")
+
+Rel(user, system, "View posts in threads and makes comments using")
+Rel(admin, system, "Manages the forum using")
+
+SHOW_LEGEND()
+@enduml
