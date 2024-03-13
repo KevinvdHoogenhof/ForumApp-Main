@@ -10,40 +10,35 @@
 !include DEVICONS/msql_server.puml
 !include FONTAWESOME/users.puml
 
+Container(api, "API gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")
 
-System_Boundary(1,"User API"){
-    Component(authentication, "User authentication", "Controller")
-    Component(authorization, "User authorization", "Controller")
-    Component(management, "User management", "Controller")
-    Component(messaging, "Friend messaging", "Controller")
+System_Boundary(ams,"AccountService"){
+    Component(acontroller, "Account controller", "Controller")
+    Component(alogic, "Account logic", "logic")
+    Component(adal, "Account DAL", "DAL")
 }
-System_Boundary(2,"Post API"){
-    Component(threads, "Threads", "Controller")
-    Component(posts, "Posts", "Controller")
-    Component(comments, "Comments", "Controller")
-}
-System_Boundary(3,"Image API"){
-    Component(upload, "Image upload", "Controller")
-    Component(retrieve, "Image retrieval", "Controller")
-    Component(delete, "Image deletion", "Controller")
+ContainerDb(userdb, "UserDB", "Microsoft SQL", "User information and profiles", $sprite="postgresql")
+
+System_Boundary(aams,"AuthService","Microservice"){
+Component(aac, "Account creation", "Endpoint")
 }
 
+Container(mq, "Kafka", "ASP.NET", "MessageBroker")
 
-' Container(userapi, "API", "ASP.NET", "User information and authentication & authorization", $sprite="dotnet")
-' Container(postapi, "API", "ASP.NET", "Threads, posts and comments", $sprite="dotnet")
-' Container(imageapi, "API", "ASP.NET", "Images", $sprite="dotnet")
+Rel(api, acontroller, "https")
+Rel(api, aac, "https")
 
-' ContainerDb(userdb, "UserDB", "Microsoft SQL", "User information and profiles", $sprite="msql_server")
-' ContainerDb(postdb, "PostDB", "Microsoft SQL", "Threads, posts and comments", $sprite="msql_server")
-' ContainerDb(imagedb, "ImageDB", "File Storage", "Image storage")
+ams -[hidden]> aams
 
-' Rel(api, userapi, "???", "???")
-' Rel(api, postapi, "???", "???")
-' Rel(api, imageapi, "???", "???")
+acontroller --> alogic
+alogic --> adal
 
-' Rel(userapi, userdb, "Reads/Writes")
-' Rel(postapi, postdb, "Reads/Writes")
-' Rel(imageapi, imagedb, "Reads/Writes")
+acontroller -[hidden]> aams
+
+adal --> userdb
+
+Rel(aac, mq, "Messaging")
+Rel(mq, acontroller, "Messaging")
 
 SHOW_LEGEND()
 @enduml
