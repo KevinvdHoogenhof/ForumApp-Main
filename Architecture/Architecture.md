@@ -16,6 +16,9 @@ In the C2 model you take a look at the various containers that will be part of a
 
 ## C3: Components
 
-The C3 model looks more in depth on a container of the C2 model. In this model you can see how one container works and what components a container has.
+The C3 model looks more in depth at a container of the C2 model. In this model you can see how one container works and what components a container has as well as the components directly connected to this component of the container.
+
+Since the containers of my application will be built using a largely similar pattern I have only created a C3 diagram for one of my containers. 
 
 ![C3 model](Architecture_C3.png "C3 model")
+

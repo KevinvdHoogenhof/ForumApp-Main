@@ -4,10 +4,8 @@
 !include <C4/C4_Component>
 !define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
 !define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
-!include DEVICONS/react.puml
-!include DEVICONS/java.puml
 !include DEVICONS/dotnet.puml
-!include DEVICONS/msql_server.puml
+!include DEVICONS/postgresql.puml
 !include FONTAWESOME/users.puml
 
 Container(api, "API gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")
@@ -17,13 +15,13 @@ System_Boundary(ams,"AccountService"){
     Component(alogic, "Account logic", "logic")
     Component(adal, "Account DAL", "DAL")
 }
-ContainerDb(userdb, "UserDB", "Microsoft SQL", "User information and profiles", $sprite="postgresql")
+ContainerDb(userdb, "UserDB", "PostgreSQL", "User information and profiles", $sprite="postgresql")
 
 System_Boundary(aams,"AuthService","Microservice"){
 Component(aac, "Account creation", "Endpoint")
 }
 
-Container(mq, "Kafka", "ASP.NET", "MessageBroker")
+Container(mq, "Kafka", "MessageBroker")
 
 Rel(api, acontroller, "https")
 Rel(api, aac, "https")
