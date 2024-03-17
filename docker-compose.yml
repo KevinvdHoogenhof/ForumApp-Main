@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  threadservice:
+    container_name: threadservice
+    image: kvdhoogenhof/forumapp-threads
+    ports:
+      - 9001:8080
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:8080;http://+
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    restart: on-failure
+    
