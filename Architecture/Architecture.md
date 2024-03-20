@@ -10,9 +10,13 @@ In the C1 model you can find an overview of the context of the forum application
 
 ## C2: Containers
 
-In the C2 model you take a look at the various containers that will be part of a software application. In this model you can see what services I will be using in the forum application and what technologies are being used.
+In the C2 model you take a look at the various containers that will be part of a software application. In this model you can see what services I will be using in the forum application and what technologies are being used. In the development document you can see the reasoning behind the technology choices.
 
 ![C2 model](Architecture_C2.png "C2 model")
+
+Since I won't have time to develop everything in this diagram I also made an alternative version of the C2 diagram that only contains the parts I will be implementing in this semester.
+
+![C2 model project](Architecture_C2_project.png "C2 model project")
 
 ## C3: Components
 

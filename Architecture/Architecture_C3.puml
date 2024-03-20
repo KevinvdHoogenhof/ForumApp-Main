@@ -21,7 +21,9 @@ System_Boundary(aams,"AuthService","Microservice"){
 Component(aac, "Account creation", "Endpoint")
 }
 
+System_Boundary(mb, "Message Broker", " "){
 Container(mq, "Kafka", "MessageBroker")
+}
 
 Rel(api, acontroller, "https")
 Rel(api, aac, "https")
@@ -35,8 +37,11 @@ acontroller -[hidden]> aams
 
 adal --> userdb
 
-Rel(aac, mq, "Messaging")
-Rel(mq, acontroller, "Messaging")
+aac .. mq : messaging
+mq .. acontroller : messaging
+
+' Rel(aac, mq, "Messaging")
+' Rel(mq, acontroller, "Messaging")
 
 SHOW_LEGEND()
 @enduml
