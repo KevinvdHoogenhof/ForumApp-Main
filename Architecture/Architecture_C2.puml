@@ -38,7 +38,7 @@ ContainerDb(commentdb, "CommentDB", "MongoDB", "Comments", $sprite="mongodb")
 ContainerDb(imagedb, "ImageDB", "File Storage", "Image storage")
 
 System_Boundary(mb, "Message Broker", " "){
-Container(mq, "Kafka", "MessageBroker")
+ConmponentQueue(mq, "Kafka", "MessageBroker")
 }
 
 Rel_R(user, frontend, "Uses", "https")
