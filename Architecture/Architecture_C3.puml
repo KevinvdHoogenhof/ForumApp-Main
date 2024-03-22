@@ -1,4 +1,5 @@
 @startuml Architecture_C3
+title Forum application C3 model AccountService
 ' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
 !include <C4/C4_Component>

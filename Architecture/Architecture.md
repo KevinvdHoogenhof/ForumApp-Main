@@ -18,6 +18,22 @@ Since I won't have time to develop everything in this diagram I also made an alt
 
 ![C2 model project](Architecture_C2_project.png "C2 model project")
 
+## Sequence and Walkthrough diagrams
+
+To make it more clear how traffic travels in my architecture I made a sequence and walkthrough diagram for 2 user stories/scenarios. The first being account creation and the second viewing posts. Both of these scenarios have multiple microservices that need to perform certain actions. With the help of these diagrams you can get a clearer view of how messaging is used in the forum application and how requests are handled.
+
+### Account Creation
+
+![Walkthrough Account creation](Walkthrough_AccountCreation.png "Walkthrough Account creation")
+
+![Sequence diagram Account creation](SequenceDiagram_AccountCreation.png "Sequence diagram Account creation")
+
+### Viewing Posts
+
+![Walkthrough Viewing posts](Walkthrough_ViewPosts.png "Walkthrough Viewing posts")
+
+![Sequence diagram Viewing posts](SequenceDiagram_ViewPosts.png "Sequence diagram Viewing posts")
+
 ## C3: Components
 
 The C3 model looks more in depth at a container of the C2 model. In this model you can see how one container works and what components a container has as well as the components directly connected to this component of the container.

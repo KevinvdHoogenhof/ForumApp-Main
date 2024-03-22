@@ -1,4 +1,5 @@
 @startuml Architecture_C2
+title Forum application C2 model
 ' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
 !include <C4/C4_Component>
@@ -38,7 +39,7 @@ ContainerDb(commentdb, "CommentDB", "MongoDB", "Comments", $sprite="mongodb")
 ContainerDb(imagedb, "ImageDB", "File Storage", "Image storage")
 
 System_Boundary(mb, "Message Broker", " "){
-ConmponentQueue(mq, "Kafka", "MessageBroker")
+ComponentQueue(mq, "Kafka", "MessageBroker")
 }
 
 Rel_R(user, frontend, "Uses", "https")

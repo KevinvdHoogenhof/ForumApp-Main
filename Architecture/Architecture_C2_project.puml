@@ -1,4 +1,5 @@
 @startuml Architecture_C2_project
+title Forum application C2 model alternative version
 ' Edited version of the C2 diagram that only shows what I will be implementing in the project.
 
 ' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
@@ -37,7 +38,7 @@ System_Boundary(mb, "Message Broker", " "){
 ' queue Kafka as mq {
 '    card messagebroker 
 ' }
-Container(mq, "Kafka", "MessageBroker")
+ComponentQueue(mq, "Kafka", "MessageBroker")
 }
 
 Rel_R(user, frontend, "Uses", "https")
