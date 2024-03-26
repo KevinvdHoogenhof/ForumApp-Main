@@ -1,4 +1,5 @@
 @startuml Architecture_C3
+title Forum application C3 model AccountService
 ' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
 !include <C4/C4_Component>
@@ -21,7 +22,9 @@ System_Boundary(aams,"AuthService","Microservice"){
 Component(aac, "Account creation", "Endpoint")
 }
 
+System_Boundary(mb, "Message Broker", " "){
 Container(mq, "Kafka", "MessageBroker")
+}
 
 Rel(api, acontroller, "https")
 Rel(api, aac, "https")
@@ -35,8 +38,11 @@ acontroller -[hidden]> aams
 
 adal --> userdb
 
-Rel(aac, mq, "Messaging")
-Rel(mq, acontroller, "Messaging")
+aac .. mq : messaging
+mq .. acontroller : messaging
+
+' Rel(aac, mq, "Messaging")
+' Rel(mq, acontroller, "Messaging")
 
 SHOW_LEGEND()
 @enduml

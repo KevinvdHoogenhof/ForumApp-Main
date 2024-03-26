@@ -1,17 +1,47 @@
 version: '3.4'
 
 services:
+  # gateway:
+  #   container_name: gateway
+  #   image: gateway
+  #   ports:
+  #     - 5001:8080
+  #     - 5000:8081
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ASPNETCORE_URLS=https://+:8080;http://+:8081
+  #     - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
+  #     - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gateway.pfx
+  #   volumes:
+  #     - ~/.aspnet/https:/https:ro
+  #   restart: on-failure
+  #   depends_on:
+  #     - threadservice
+
   threadservice:
     container_name: threadservice
-    image: kvdhoogenhof/forumapp-threads
+    image: threadservice #kvdhoogenhof/forumapp-threads
     ports:
       - 9001:8080
+      - 9000:8081
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:8080;http://+
+      - ASPNETCORE_URLS=https://+:8080;http://+:8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/threadservice.pfx
     volumes:
       - ~/.aspnet/https:/https:ro
     restart: on-failure
-    
+    depends_on:
+      - threaddb
+
+  threaddb:
+    container_name: threaddb
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - 'data:/data/db'
+
+volumes:
+  data:

@@ -1,0 +1,46 @@
+@startuml Walkthrough_AccountCreation
+title Forum application walkthrough account creation
+' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!include <C4/C4_Component>
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/react.puml
+!include DEVICONS/dotnet.puml
+!include DEVICONS/postgresql.puml
+!include FONTAWESOME/users.puml
+
+' Containers
+Person(user, "User", "User of the application", $sprite="users")
+
+Container(frontend, "Frontend", "react", "Frontend user interface", $sprite="react")
+
+Container(api, "API Gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")
+
+Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="dotnet")
+Container(accservice, "AccountService", "ASP.NET", "User information", $sprite="dotnet")
+
+ContainerDb(authdb, "AuthDB", "PostgreSQL", "Credentials, sessions", $sprite="postgresql")
+ContainerDb(userdb, "UserDB", "PostgreSQL", "User information and profiles", $sprite="postgresql")
+
+ComponentQueue(mq, "Kafka", "MessageBroker")
+
+' Relations
+user -> frontend : https
+user <- frontend : https
+frontend --> api : https
+api --> authservice : https
+api <-- authservice : https
+frontend <-- api : https
+
+api -[hidden]-> mq
+api -[hidden]-> accservice
+
+authservice . mq : msg
+mq . accservice : msg
+
+authservice --> authdb : Reads/Writes
+accservice --> userdb : Reads/Writes
+
+SHOW_LEGEND()
+@enduml

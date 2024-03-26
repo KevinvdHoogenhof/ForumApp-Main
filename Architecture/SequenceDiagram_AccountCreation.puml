@@ -1,0 +1,31 @@
+@startuml SequenceDiagram_AccountCreation
+title Forum application account creation sequence diagram
+' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include <C4/C4_Component>
+
+' Containers
+actor User as user
+participant Gateway as api
+participant AuthService as authservice
+participant AccountService as accservice
+queue Kafka as mq
+database AuthDB as authdb
+database UserDB as userdb
+
+' Relations
+autonumber
+user -> api : Sends request
+api -> authservice : Routes request
+autonumber stop
+authservice -> authdb : Reads/Writes
+autonumber 3
+api <- authservice : Processes request
+user <- api : Sends response
+autonumber stop
+
+authservice --> mq : Messaging
+mq --> accservice : Messaging
+accservice -> userdb : Reads/Writes
+
+' SHOW_LEGEND()
+@enduml
