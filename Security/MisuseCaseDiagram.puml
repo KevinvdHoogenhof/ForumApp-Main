@@ -1,0 +1,131 @@
+@startuml MisuseCaseDiagram
+title Forum application misuse case diagram
+' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!include <C4/C4_Component>
+' !define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+' !define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+' !include FONTAWESOME/users.puml
+
+' Normal actors
+:Guest: as Guest
+:Registered User: as User
+:Admin: as Admin
+
+Guest -[hidden]> User
+User -[hidden]> Admin
+
+' Use cases
+usecase UC1 as "View threads/posts/comments"
+usecase UC2 as "Register/login"
+usecase UC3 as "Create posts/comments"
+usecase UC4 as "View account information"
+usecase UC5 as "Add new threads"
+
+UC1 -[hidden]> UC2
+UC2 -[hidden]> UC3
+UC3 -[hidden]> UC4
+UC4 -[hidden]> UC5
+
+Guest --> UC1
+Guest --> UC2
+User --> UC1
+User --> UC2
+User --> UC3
+User --> UC4
+Admin --> UC1
+Admin --> UC2
+Admin --> UC3
+Admin --> UC4
+Admin --> UC5
+
+' Security measures
+
+usecase S1 as "Input validation"
+usecase S2 as "Random tokens"
+usecase S3 as "Encryption of data"
+usecase S4 as "Rate limiting"
+usecase S5 as "Event logging"
+usecase S6 as "Error handling"
+
+S1 -[hidden]> S2
+S2 -[hidden]> S3
+S3 -[hidden]> S4
+S4 -[hidden]> S5
+S5 -[hidden]> S6
+
+UC1 --> S5
+UC1 --> S6
+UC2 --> S1
+UC2 --> S2
+UC2 --> S3
+UC2 --> S4
+UC2 --> S5
+UC2 --> S6
+UC3 --> S1
+UC3 --> S4
+UC3 --> S5
+UC3 --> S6
+UC4 --> S2
+UC4 --> S5
+UC4 --> S6
+UC5 --> S1
+UC5 --> S5
+UC5 --> S6
+
+' Misuse cases
+usecase MU1 as "SQL injection"
+usecase MU2 as "CSRF"
+usecase MU3 as "XSS"
+usecase MU4 as "Phishing"
+usecase MU5 as "Brute force"
+usecase MU6 as "DDoS"
+usecase MU7 as "Exploit/ unknown attack"
+
+MU1 -[hidden]> MU2
+MU2 -[hidden]> MU3
+MU3 -[hidden]> MU4
+MU4 -[hidden]> MU5
+MU5 -[hidden]> MU6
+MU6 -[hidden]> MU7
+
+S1 --> MU1
+S1 --> MU3
+S1 --> MU4
+S1 --> MU7
+S2 --> MU2
+S3 --> MU2
+S3 --> MU7
+S4 --> MU4
+S4 --> MU5
+S4 --> MU6
+S5 --> MU4
+S5 --> MU7
+S6 --> MU7
+
+' Threat actors
+:Cyber criminal: as cc
+:Script kiddie: as sk
+:Hacktivist: as hv
+:Fraud: as fr
+:Whitehat hacker: as wh
+
+wh -[hidden]> cc
+cc -[hidden]> fr
+fr -[hidden]> sk
+sk -[hidden]> hv
+
+MU1 <-- cc
+MU3 <-- cc
+MU7 <-- cc
+MU5 <-- sk
+MU6 <-- sk
+MU6 <-- hv
+MU2 <-- fr
+MU4 <-- fr
+MU1 <-- wh
+MU2 <-- wh
+MU3 <-- wh
+
+' SHOW_LEGEND()
+@enduml
