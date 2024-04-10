@@ -41,7 +41,59 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - 'data:/data/db'
+      - 'tdata:/data/db'
+
+  postservice:
+    container_name: postservice
+    image: postservice #kvdhoogenhof/forumapp-posts
+    ports:
+      - 8001:8080
+      - 8000:8081
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:8080;http://+:8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/threadservice.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    restart: on-failure
+    depends_on:
+      - postdb
+      
+  postdb:
+    container_name: postdb
+    image: mongo:latest
+    ports:
+      - "26017:27017"
+    volumes:
+      - 'pdata:/data/db'
+
+  commentservice:
+    container_name: commentservice
+    image: commentservice #kvdhoogenhof/forumapp-comments
+    ports:
+      - 7001:8080
+      - 7000:8081
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:8080;http://+:8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/threadservice.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    restart: on-failure
+    depends_on:
+      - commentdb
+      
+  commentdb:
+    container_name: commentdb
+    image: mongo:latest
+    ports:
+      - "25017:27017"
+    volumes:
+      - 'cdata:/data/db'
 
 volumes:
-  data:
+  tdata:
+  pdata:
+  cdata:
