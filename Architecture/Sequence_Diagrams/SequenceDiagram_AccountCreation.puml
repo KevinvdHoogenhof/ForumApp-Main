@@ -9,23 +9,22 @@ participant Gateway as api
 participant AuthService as authservice
 participant AccountService as accservice
 queue Kafka as mq
-database AuthDB as authdb
-database UserDB as userdb
 
 ' Relations
 autonumber
 user -> api : Sends request
+activate api
 api -> authservice : Routes request
-autonumber stop
-authservice -> authdb : Reads/Writes
-autonumber 3
+activate authservice
+
 api <- authservice : Processes request
+deactivate authservice
 user <- api : Sends response
+deactivate api
 autonumber stop
 
 authservice --> mq : Messaging
 mq --> accservice : Messaging
-accservice -> userdb : Reads/Writes
 
 ' SHOW_LEGEND()
 @enduml

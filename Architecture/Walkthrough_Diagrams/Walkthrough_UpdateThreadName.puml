@@ -1,5 +1,5 @@
-@startuml Walkthrough_ViewPosts
-title Forum application walkthrough viewing posts
+@startuml Walkthrough_UpdateThreadName
+title Forum application walkthrough update thread name
 ' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
 !include <C4/C4_Component>
@@ -11,12 +11,13 @@ title Forum application walkthrough viewing posts
 !include FONTAWESOME/users.puml
 
 ' Containers
-Person(user, "User", "User of the application", $sprite="users")
+Person(admin, "Admin", "Admin of the application", $sprite="users")
 
 Container(frontend, "Frontend", "react", "Frontend user interface", $sprite="react")
 
 Container(api, "API Gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")
 
+Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="dotnet")
 Container(threadservice, "ThreadService", "ASP.NET", "Threads", $sprite="dotnet")
 Container(postservice, "PostService", "ASP.NET", "Posts", $sprite="dotnet")
 Container(commentservice, "CommentService", "ASP.NET", "Comments", $sprite="dotnet")
@@ -28,18 +29,21 @@ ContainerDb(commentdb, "CommentDB", "MongoDB", "Comments", $sprite="mongodb")
 ComponentQueue(mq, "Kafka", "MessageBroker")
 
 ' Relations
-user -> frontend : https
-user <- frontend : https
+admin -> frontend : https
+admin <- frontend : https
 frontend --> api : https
-api --> postservice : https
-api <-- postservice : https
+api --> authservice : https
+api <-- authservice : https
+api --> threadservice : https
+api <-- threadservice : https
 frontend <-- api : https
 
-''api -[hidden]-> mq
+api -[hidden]-> authservice
 api -[hidden]-> threadservice
 api -[hidden]-> postservice
 api -[hidden]-> commentservice
 
+authservice -[hidden]> threadservice
 threadservice -[hidden]> postservice
 postservice -[hidden]> commentservice
 
@@ -53,16 +57,6 @@ mq -[hidden]-> commentdb
 threadservice --> threaddb : Reads/Writes
 postservice --> postdb : Reads/Writes
 commentservice --> commentdb : Reads/Writes
-
-
-''api -[hidden]-> mq
-''api -[hidden]-> accservice
-
-''authservice . mq : msg
-''mq . accservice : msg
-
-''authservice --> authdb : Reads/Writes
-''accservice --> userdb : Reads/Writes
 
 SHOW_LEGEND()
 @enduml

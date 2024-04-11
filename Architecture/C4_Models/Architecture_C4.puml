@@ -1,0 +1,80 @@
+@startuml Architecture_C4
+title Forum application C4 model
+' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include <C4/C4_Component>
+
+class User{
+    int ID
+    string Name
+    string Email
+    string PasswordHash
+    Login()
+    Logout()
+    IsTokenValid()
+}
+
+class Account{
+    int ID
+    string Name
+    string Email
+    string PasswordHash
+    string Description
+    List<Settings> PrivacySettings
+    List<Friend> Friends
+    UpdateName()
+    ChangeEmail()
+    ChangePassword()
+    UpdatePrivacySettings()
+    UpdateDescription()
+    SendFriendRequest()
+    AcceptFriendRequest()
+    DenyFriendRequest()
+    RemoveFriend()
+}
+User::Name - Account::Name
+
+class Thread{
+    string ID
+    string Name
+    string Description
+    int Posts
+    UpdateThread()
+    RemoveThread()
+}
+
+class Post{
+    string ID
+    string ThreadID
+    string ThreadName
+    int AuthorID
+    string AuthorName
+    string Name
+    string Content
+    int Comments
+    UpdatePost()
+    RemovePost()
+}
+Thread::ID - Post::ThreadID
+Account::ID - Post::AuthorID
+
+class Comment{
+    string ID
+    string ThreadID
+    string ThreadName
+    string PostID
+    string PostName
+    int AuthorID
+    string AuthorName
+    string Name
+    string Content
+    UpdateComment()
+    RemoveComment()
+}
+Thread::ID - Comment::ThreadID
+Post::ID - Comment::PostID
+Account::ID - Comment::AuthorID
+
+Account -[hidden]-> Post
+Account -[hidden]-> Thread
+Account -[hidden]-> Comment
+@enduml

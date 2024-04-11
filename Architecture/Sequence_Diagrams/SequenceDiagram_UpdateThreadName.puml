@@ -1,0 +1,38 @@
+@startuml SequenceDiagram_UpdateThreadName
+title Forum application updating name of thread sequence diagram
+' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include <C4/C4_Component>
+
+' Containers
+actor Admin as user
+participant Gateway as api
+participant AuthService as auth
+participant ThreadService as threads
+participant PostService as posts
+participant CommentService as comments
+queue Kafka as mq
+
+' Relations
+autonumber
+user -> api : Sends request
+activate api
+api -> auth : Routes request
+activate auth
+api <- auth : Processes request
+deactivate auth
+api -> threads : Routes request
+activate threads
+api <- threads : Processes request
+deactivate threads
+user <- api : Sends response
+deactivate api
+autonumber stop
+
+threads --> mq : Messaging
+
+comments <-- mq : Messaging
+
+posts <-- mq : Messaging
+
+' SHOW_LEGEND()
+@enduml
