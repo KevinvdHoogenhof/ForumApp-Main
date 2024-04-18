@@ -29,7 +29,7 @@ services:
       - ASPNETCORE_URLS=https://+:8080;http://+:8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/threadservice.pfx
-      - "ThreadDB__ConnectionString=$ThreadDBConnString"
+      - "ConnectionStrings__MongoDB=$ThreadDBConnString"
     volumes:
       - ~/.aspnet/https:/https:ro
     restart: on-failure
@@ -55,7 +55,7 @@ services:
       - ASPNETCORE_URLS=https://+:8080;http://+:8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/threadservice.pfx
-      - "PostDB__ConnectionString=$PostDBConnString"
+      - "ConnectionStrings__MongoDB=$PostDBConnString"
     volumes:
       - ~/.aspnet/https:/https:ro
     restart: on-failure
@@ -81,7 +81,7 @@ services:
       - ASPNETCORE_URLS=https://+:8080;http://+:8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/threadservice.pfx
-      - "CommentDB__ConnectionString=$CommentDBConnString"
+      - "ConnectionStrings__MongoDB=$CommentDBConnString"
     volumes:
       - ~/.aspnet/https:/https:ro
     restart: on-failure
