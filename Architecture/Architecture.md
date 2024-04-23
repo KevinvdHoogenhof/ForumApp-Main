@@ -55,3 +55,9 @@ Since the containers of my application will be built using a largely similar pat
 In my C4 diagram you can see what the class diagram of the forum application looks like. In this diagram you can see what models the application is made up of and what fields these models have and the relations between them.
 
 ![C4 model](./C4_Models/Architecture_C4.png "C4 model")
+
+## C4: Data requirements
+
+Below you can find an alternative version of the C$ model showing the fields each class would have and the data that will be stored in the database. This diagram also allows us to get the data requirements for that entity.
+
+![C4 model](./C4_Models/Architecture_C4_DataRequirements.png "C4 model")
