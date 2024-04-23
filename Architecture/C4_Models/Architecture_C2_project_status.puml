@@ -14,6 +14,7 @@ title Forum application C2 model alternative version project status
 !define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
 !include DEVICONS/react.puml
 !include DEVICONS/dotnet.puml
+!include DEVICONS/python.puml
 !include DEVICONS/postgresql.puml
 !include DEVICONS/mongodb.puml
 !include FONTAWESOME/users.puml
@@ -27,11 +28,11 @@ Container(frontendadmin, "Admin frontend", "react", "Frontend admin interface", 
 Container(api, "API Gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")#Green
 
 System_Boundary(ms, "Microservices", "Back-end services"){
-Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="dotnet")
-Container(accservice, "AccountService", "ASP.NET", "User information", $sprite="dotnet")
+Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="python")
+Container(accservice, "AccountService", "ASP.NET", "User information", $sprite="python")
 Container(threadservice, "ThreadService", "ASP.NET", "Threads", $sprite="dotnet")#Green
-Container(postservice, "PostService", "ASP.NET", "Posts", $sprite="dotnet")#GoldenRod
-Container(commentservice, "CommentService", "ASP.NET", "Comments", $sprite="dotnet")#GoldenRod
+Container(postservice, "PostService", "ASP.NET", "Posts", $sprite="dotnet")#Green
+Container(commentservice, "CommentService", "ASP.NET", "Comments", $sprite="dotnet")#Green
 }
 
 ContainerDb(authdb, "AuthDB", "PostgreSQL", "Credentials, sessions", $sprite="postgresql")

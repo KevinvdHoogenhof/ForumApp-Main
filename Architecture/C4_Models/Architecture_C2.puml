@@ -7,6 +7,7 @@ title Forum application C2 model
 !define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
 !include DEVICONS/react.puml
 !include DEVICONS/dotnet.puml
+!include DEVICONS/python.puml
 !include DEVICONS/postgresql.puml
 !include DEVICONS/mongodb.puml
 !include FONTAWESOME/users.puml
@@ -20,8 +21,8 @@ Container(frontendadmin, "Admin frontend", "react", "Frontend admin interface", 
 Container(api, "API Gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")
 
 System_Boundary(ms, "Microservices", "Back-end services"){
-Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="dotnet")
-Container(accservice, "AccountService", "ASP.NET", "User information", $sprite="dotnet")
+Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="python")
+Container(accservice, "AccountService", "ASP.NET", "User information", $sprite="python")
 Container(socialservice, "SocialService", "ASP.NET", "Friends & Messaging", $sprite="dotnet")
 Container(threadservice, "ThreadService", "ASP.NET", "Threads", $sprite="dotnet")
 Container(postservice, "PostService", "ASP.NET", "Posts", $sprite="dotnet")
