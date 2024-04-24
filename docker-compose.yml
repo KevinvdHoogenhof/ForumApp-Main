@@ -1,26 +1,28 @@
 version: '3.4'
 
 services:
-  # gateway:
-  #   container_name: gateway
-  #   image: gateway
-  #   ports:
-  #     - 5001:8080
-  #     - 5000:8081
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #     - ASPNETCORE_URLS=https://+:8080;http://+:8081
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
-  #     - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gateway.pfx
-  #   volumes:
-  #     - ~/.aspnet/https:/https:ro
-  #   restart: on-failure
-  #   depends_on:
-  #     - threadservice
-
+  gateway:
+    container_name: gateway
+    #image: gateway #kvdhoogenhof/forumapp-api
+    image: kvdhoogenhof/forumapp-api
+    ports:
+      - 5001:8080
+      - 5000:8081
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:8080;http://+:8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gateway.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    restart: on-failure
+    depends_on:
+      - threadservice
+      
   threadservice:
     container_name: threadservice
     image: threadservice #kvdhoogenhof/forumapp-threads
+    #image: kvdhoogenhof/forumapp-threads
     ports:
       - 9001:8080
       - 9000:8081
@@ -29,19 +31,132 @@ services:
       - ASPNETCORE_URLS=https://+:8080;http://+:8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/threadservice.pfx
+      - "ConnectionStrings__MongoDB=$ThreadDBConnString"
+      - "ProducerConfig__BootstrapServers=$KafkaConnString"
+      - "ConsumerConfig__BootstrapServers=$KafkaConnString"
     volumes:
       - ~/.aspnet/https:/https:ro
     restart: on-failure
     depends_on:
       - threaddb
-
+      
   threaddb:
     container_name: threaddb
     image: mongo:latest
     ports:
       - "27017:27017"
     volumes:
-      - 'data:/data/db'
+      - 'tdata:/data/db'
+
+  postservice:
+    container_name: postservice
+    #image: postservice #kvdhoogenhof/forumapp-posts
+    image: kvdhoogenhof/forumapp-posts
+    ports:
+      - 8001:8080
+      - 8000:8081
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:8080;http://+:8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/threadservice.pfx
+      - "ConnectionStrings__MongoDB=$PostDBConnString"
+      - "ProducerConfig__BootstrapServers=$KafkaConnString"
+      - "ConsumerConfig__BootstrapServers=$KafkaConnString"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    restart: on-failure
+    depends_on:
+      - postdb
+      
+  postdb:
+    container_name: postdb
+    image: mongo:latest
+    ports:
+      - "26017:27017"
+    volumes:
+      - 'pdata:/data/db'
+
+  commentservice:
+    container_name: commentservice
+    #image: commentservice #kvdhoogenhof/forumapp-comments
+    image: kvdhoogenhof/forumapp-comments
+    ports:
+      - 7001:8080
+      - 7000:8081
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:8080;http://+:8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/threadservice.pfx
+      - "ConnectionStrings__MongoDB=$CommentDBConnString"
+      - "ProducerConfig__BootstrapServers=$KafkaConnString"
+      - "ConsumerConfig__BootstrapServers=$KafkaConnString"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+    restart: on-failure
+    depends_on:
+      - commentdb
+      
+  commentdb:
+    container_name: commentdb
+    image: mongo:latest
+    ports:
+      - "25017:27017"
+    volumes:
+      - 'cdata:/data/db'
+      
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+      
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka:29092,LISTENER_DOCKER_EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: LISTENER_DOCKER_INTERNAL://:29092,LISTENER_DOCKER_EXTERNAL://:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "updatethreadname:1:1,newpost:1:1,updatepostname:1:1"
+      
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    user: root
+    volumes:
+          - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+          - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+     
+  cadvisor:
+    container_name: cadvisor
+    image: 'google/cadvisor:latest'
+    volumes:
+          - /:/rootfs:ro
+          - /var/run:/var/run:ro
+          - /sys:/sys:ro
+          - /var/lib/docker/:/var/lib/docker:ro
+          - /dev/disk:/dev/disk/:ro
+    ports:
+        - '8082:8080'
+       
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:6.1.6
+    environment:
+        - GF_SECURITY_ADMIN_PASSWORD=pass
+    ports:
+        - "3030:3000"
 
 volumes:
-  data:
+  tdata:
+  pdata:
+  cdata:

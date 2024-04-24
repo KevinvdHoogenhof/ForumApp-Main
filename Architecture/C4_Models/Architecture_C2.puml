@@ -1,0 +1,84 @@
+@startuml Architecture_C2
+title Forum application C2 model
+' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!include <C4/C4_Component>
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/react.puml
+!include DEVICONS/dotnet.puml
+!include DEVICONS/python.puml
+!include DEVICONS/postgresql.puml
+!include DEVICONS/mongodb.puml
+!include FONTAWESOME/users.puml
+
+Person(user, "User", "User of the application", $sprite="users")
+Person(admin, "Admin", "Manages the application")
+
+Container(frontend, "Frontend", "react", "Frontend user interface", $sprite="react")
+Container(frontendadmin, "Admin frontend", "react", "Frontend admin interface", $sprite="react")
+
+Container(api, "API Gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")
+
+System_Boundary(ms, "Microservices", "Back-end services"){
+Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="python")
+Container(accservice, "AccountService", "ASP.NET", "User information", $sprite="python")
+Container(socialservice, "SocialService", "ASP.NET", "Friends & Messaging", $sprite="dotnet")
+Container(threadservice, "ThreadService", "ASP.NET", "Threads", $sprite="dotnet")
+Container(postservice, "PostService", "ASP.NET", "Posts", $sprite="dotnet")
+Container(commentservice, "CommentService", "ASP.NET", "Comments", $sprite="dotnet")
+Container(notificationservice, "NotificationService", "ASP.NET", "Notifications", $sprite="dotnet")
+Container(imageservice, "ImageService", "ASP.NE", "Images", $sprite="dotnet")
+}
+
+ContainerDb(authdb, "AuthDB", "PostgreSQL", "Credentials, sessions", $sprite="postgresql")
+ContainerDb(userdb, "UserDB", "PostgreSQL", "User information and profiles", $sprite="postgresql")
+ContainerDb(socialdb, "SocialDB", "MongoDB", "Friends, messages", $sprite="mongodb")
+ContainerDb(threaddb, "ThreadDB", "MongoDB", "Threads", $sprite="mongodb")
+ContainerDb(postdb, "PostDB", "MongoDB", "Posts", $sprite="mongodb")
+ContainerDb(commentdb, "CommentDB", "MongoDB", "Comments", $sprite="mongodb")
+ContainerDb(imagedb, "ImageDB", "File Storage", "Image storage")
+
+System_Boundary(mb, "Message Broker", " "){
+ComponentQueue(mq, "Kafka", "MessageBroker")
+}
+
+Rel_R(user, frontend, "Uses", "https")
+Rel_R(admin, frontendadmin, "Uses", "https")
+
+Rel(frontend, api, "Uses", "https")
+Rel(frontendadmin, api, "Uses", "https")
+
+user -[hidden]> frontend
+frontend -[hidden]> frontendadmin
+frontendadmin -[hidden]> admin
+
+Rel(api, authservice, "Uses", "https")
+Rel(api, accservice, "Uses", "https")
+Rel(api, socialservice, "Uses", "https")
+Rel(api, threadservice, "Uses", "https")
+Rel(api, postservice, "Uses", "https")
+Rel(api, commentservice, "Uses", "https")
+Rel(api, imageservice, "Uses", "https")
+Rel(api, notificationservice, "Uses", "https")
+
+authservice . accservice : msg
+accservice . socialservice : msg
+socialservice . threadservice : msg
+threadservice . postservice : msg
+postservice . commentservice : msg
+commentservice . imageservice : msg
+imageservice . notificationservice : msg
+
+imageservice -[hidden]> mq
+
+Rel(authservice, authdb, "Reads/Writes")
+Rel(accservice, userdb, "Reads/Writes")
+Rel(socialservice, socialdb, "Reads/Writes")
+Rel(threadservice, threaddb, "Reads/Writes")
+Rel(postservice, postdb, "Reads/Writes")
+Rel(commentservice, commentdb, "Reads/Writes")
+Rel(imageservice, imagedb, "Reads/Writes")
+
+SHOW_LEGEND()
+@enduml

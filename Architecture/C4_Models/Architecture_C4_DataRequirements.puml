@@ -1,0 +1,52 @@
+@startuml Architecture_C4_DataRequirements
+title Forum application C4 model Data requirements
+' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include <C4/C4_Component>
+
+class User{
+    int ID
+    string Name
+    string Email
+    string PasswordHash
+}
+
+class Account{
+    int ID
+    string Name
+    string Email
+    string PasswordHash
+    string Description
+    List<Settings> PrivacySettings
+    List<Friend> Friends
+}
+
+class Thread{
+    string ID
+    string Name
+    string Description
+    int Posts
+}
+
+class Post{
+    string ID
+    string ThreadID
+    string ThreadName
+    int AuthorID
+    string AuthorName
+    string Name
+    string Content
+    int Comments
+}
+
+class Comment{
+    string ID
+    string ThreadID
+    string ThreadName
+    string PostID
+    string PostName
+    int AuthorID
+    string AuthorName
+    string Name
+    string Content
+}
+@enduml

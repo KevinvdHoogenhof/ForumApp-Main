@@ -1,6 +1,12 @@
-@startuml Architecture_C2_project
-title Forum application C2 model alternative version
-' Edited version of the C2 diagram that only shows what I will be implementing in the project.
+@startuml Architecture_C2_project_status
+title Forum application C2 model alternative version project status
+' Edited version of the C2 diagram that only shows what I will be implementing in the project and the status of the services.
+
+' Status colors / How finished is a service?
+' Blue = Not yet started on
+' GoldernRod (Yellow) = Basic version
+' Orange = Mostly finished
+' Green = Finished (for now)
 
 ' !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 !include <C4/C4_Component>
@@ -8,6 +14,7 @@ title Forum application C2 model alternative version
 !define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
 !include DEVICONS/react.puml
 !include DEVICONS/dotnet.puml
+!include DEVICONS/python.puml
 !include DEVICONS/postgresql.puml
 !include DEVICONS/mongodb.puml
 !include FONTAWESOME/users.puml
@@ -15,30 +22,30 @@ title Forum application C2 model alternative version
 Person(user, "User", "User of the application", $sprite="users")
 Person(admin, "Admin", "Manages the application")
 
-Container(frontend, "Frontend", "react", "Frontend user interface", $sprite="react")
+Container(frontend, "Frontend", "react", "Frontend user interface", $sprite="react")#Orange
 Container(frontendadmin, "Admin frontend", "react", "Frontend admin interface", $sprite="react")
 
-Container(api, "API Gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")
+Container(api, "API Gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")#Green
 
 System_Boundary(ms, "Microservices", "Back-end services"){
-Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="dotnet")
-Container(accservice, "AccountService", "ASP.NET", "User information", $sprite="dotnet")
-Container(threadservice, "ThreadService", "ASP.NET", "Threads", $sprite="dotnet")
-Container(postservice, "PostService", "ASP.NET", "Posts", $sprite="dotnet")
-Container(commentservice, "CommentService", "ASP.NET", "Comments", $sprite="dotnet")
+Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="python")
+Container(accservice, "AccountService", "ASP.NET", "User information", $sprite="python")
+Container(threadservice, "ThreadService", "ASP.NET", "Threads", $sprite="dotnet")#Green
+Container(postservice, "PostService", "ASP.NET", "Posts", $sprite="dotnet")#Green
+Container(commentservice, "CommentService", "ASP.NET", "Comments", $sprite="dotnet")#Green
 }
 
 ContainerDb(authdb, "AuthDB", "PostgreSQL", "Credentials, sessions", $sprite="postgresql")
 ContainerDb(userdb, "UserDB", "PostgreSQL", "User information and profiles", $sprite="postgresql")
-ContainerDb(threaddb, "ThreadDB", "MongoDB", "Threads", $sprite="mongodb")
-ContainerDb(postdb, "PostDB", "MongoDB", "Posts", $sprite="mongodb")
-ContainerDb(commentdb, "CommentDB", "MongoDB", "Comments", $sprite="mongodb")
+ContainerDb(threaddb, "ThreadDB", "MongoDB", "Threads", $sprite="mongodb")#Green
+ContainerDb(postdb, "PostDB", "MongoDB", "Posts", $sprite="mongodb")#Green
+ContainerDb(commentdb, "CommentDB", "MongoDB", "Comments", $sprite="mongodb")#Green
 
 System_Boundary(mb, "Message Broker", " "){
 ' queue Kafka as mq {
 '    card messagebroker 
 ' }
-ComponentQueue(mq, "Kafka", "MessageBroker")
+ComponentQueue(mq, "Kafka", "MessageBroker")#GoldenRod
 }
 
 Rel_R(user, frontend, "Uses", "https")
