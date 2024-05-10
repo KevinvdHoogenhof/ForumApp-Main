@@ -22,20 +22,20 @@ title Forum application C2 model alternative version project status
 Person(user, "User", "User of the application", $sprite="users")
 Person(admin, "Admin", "Manages the application")
 
-Container(frontend, "Frontend", "react", "Frontend user interface", $sprite="react")#Orange
+Container(frontend, "Frontend", "react", "Frontend user interface", $sprite="react")#Green
 Container(frontendadmin, "Admin frontend", "react", "Frontend admin interface", $sprite="react")
 
 Container(api, "API Gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")#Green
 
 System_Boundary(ms, "Microservices", "Back-end services"){
-Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="python")
+Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="python")#Orange
 Container(accservice, "AccountService", "ASP.NET", "User information", $sprite="python")
 Container(threadservice, "ThreadService", "ASP.NET", "Threads", $sprite="dotnet")#Green
 Container(postservice, "PostService", "ASP.NET", "Posts", $sprite="dotnet")#Green
 Container(commentservice, "CommentService", "ASP.NET", "Comments", $sprite="dotnet")#Green
 }
 
-ContainerDb(authdb, "AuthDB", "PostgreSQL", "Credentials, sessions", $sprite="postgresql")
+ContainerDb(authdb, "AuthDB", "PostgreSQL", "Credentials, sessions", $sprite="postgresql")#Green
 ContainerDb(userdb, "UserDB", "PostgreSQL", "User information and profiles", $sprite="postgresql")
 ContainerDb(threaddb, "ThreadDB", "MongoDB", "Threads", $sprite="mongodb")#Green
 ContainerDb(postdb, "PostDB", "MongoDB", "Posts", $sprite="mongodb")#Green
@@ -45,7 +45,7 @@ System_Boundary(mb, "Message Broker", " "){
 ' queue Kafka as mq {
 '    card messagebroker 
 ' }
-ComponentQueue(mq, "Kafka", "MessageBroker")#GoldenRod
+ComponentQueue(mq, "Kafka", "MessageBroker")#Orange
 }
 
 Rel_R(user, frontend, "Uses", "https")
