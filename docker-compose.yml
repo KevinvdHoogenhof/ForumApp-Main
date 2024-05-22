@@ -35,7 +35,7 @@ services:
     container_name: authdb
     image: postgres
     environment:
-      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_PASSWORD=$PostgresAuthDBPW
       - POSTGRES_DB=authdb
     ports:
       - "5432:5432"
@@ -178,7 +178,7 @@ services:
     container_name: grafana
     image: grafana/grafana:6.1.6
     environment:
-        - GF_SECURITY_ADMIN_PASSWORD=pass
+        - GF_SECURITY_ADMIN_PASSWORD=$GrafanaAdminPW
     ports:
         - "3030:3000"
 
