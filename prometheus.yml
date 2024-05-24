@@ -26,3 +26,8 @@ scrape_configs:
    static_configs:
     - targets:
        - commentservice:8081
+       
+ - job_name: gateway
+   static_configs:
+    - targets:
+       - gateway:8081
