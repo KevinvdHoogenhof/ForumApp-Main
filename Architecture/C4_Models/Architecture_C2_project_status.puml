@@ -20,59 +20,48 @@ title Forum application C2 model alternative version project status
 !include FONTAWESOME/users.puml
 
 Person(user, "User", "User of the application", $sprite="users")
-Person(admin, "Admin", "Manages the application")
 
-Container(frontend, "Frontend", "react", "Frontend user interface", $sprite="react")#Green
-Container(frontendadmin, "Admin frontend", "react", "Frontend admin interface", $sprite="react")
+Container(frontend, "Frontend", "react", "Frontend user interface", $sprite="react")
 
-Container(api, "API Gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")#Green
+Container(api, "API Gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")
 
 System_Boundary(ms, "Microservices", "Back-end services"){
-Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="python")#Orange
-Container(accservice, "AccountService", "ASP.NET", "User information", $sprite="python")
-Container(threadservice, "ThreadService", "ASP.NET", "Threads", $sprite="dotnet")#Green
-Container(postservice, "PostService", "ASP.NET", "Posts", $sprite="dotnet")#Green
-Container(commentservice, "CommentService", "ASP.NET", "Comments", $sprite="dotnet")#Green
+Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="python")
+Container(threadservice, "ThreadService", "ASP.NET", "Threads", $sprite="dotnet")
+Container(postservice, "PostService", "ASP.NET", "Posts", $sprite="dotnet")
+Container(commentservice, "CommentService", "ASP.NET", "Comments", $sprite="dotnet")
 }
 
-ContainerDb(authdb, "AuthDB", "PostgreSQL", "Credentials, sessions", $sprite="postgresql")#Green
-ContainerDb(userdb, "UserDB", "PostgreSQL", "User information and profiles", $sprite="postgresql")
-ContainerDb(threaddb, "ThreadDB", "MongoDB", "Threads", $sprite="mongodb")#Green
-ContainerDb(postdb, "PostDB", "MongoDB", "Posts", $sprite="mongodb")#Green
-ContainerDb(commentdb, "CommentDB", "MongoDB", "Comments", $sprite="mongodb")#Green
+ContainerDb(authdb, "AuthDB", "PostgreSQL", "Credentials, sessions", $sprite="postgresql")
+ContainerDb(threaddb, "ThreadDB", "MongoDB", "Threads", $sprite="mongodb")
+ContainerDb(postdb, "PostDB", "MongoDB", "Posts", $sprite="mongodb")
+ContainerDb(commentdb, "CommentDB", "MongoDB", "Comments", $sprite="mongodb")
 
 System_Boundary(mb, "Message Broker", " "){
 ' queue Kafka as mq {
 '    card messagebroker 
 ' }
-ComponentQueue(mq, "Kafka", "MessageBroker")#Orange
+ComponentQueue(mq, "Kafka", "MessageBroker")
 }
 
 Rel_R(user, frontend, "Uses", "https")
-Rel_R(admin, frontendadmin, "Uses", "https")
 
 Rel(frontend, api, "Uses", "https")
-Rel(frontendadmin, api, "Uses", "https")
 
 user -[hidden]> frontend
-frontend -[hidden]> frontendadmin
-frontendadmin -[hidden]> admin
 
 Rel(api, authservice, "Uses", "https")
-Rel(api, accservice, "Uses", "https")
 Rel(api, threadservice, "Uses", "https")
 Rel(api, postservice, "Uses", "https")
 Rel(api, commentservice, "Uses", "https")
 
-authservice . accservice : msg
-accservice . threadservice : msg
+authservice . threadservice : msg
 threadservice . postservice : msg
 postservice . commentservice : msg
 
 commentservice -[hidden]> mq
 
 Rel(authservice, authdb, "Reads/Writes")
-Rel(accservice, userdb, "Reads/Writes")
 Rel(threadservice, threaddb, "Reads/Writes")
 Rel(postservice, postdb, "Reads/Writes")
 Rel(commentservice, commentdb, "Reads/Writes")
