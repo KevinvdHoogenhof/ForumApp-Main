@@ -1,23 +1,37 @@
 version: '3.4'
 
 services:
+#  gateway:
+#    container_name: gateway
+#    image: gateway #kvdhoogenhof/forumapp-api
+#    #image: kvdhoogenhof/forumapp-api
+#    ports:
+#      - 5001:8080
+#      - 5000:8081
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - ASPNETCORE_URLS=https://+:8080;http://+:8081
+#      - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
+#      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gateway.pfx
+#    volumes:
+#      - ~/.aspnet/https:/https:ro
+#    restart: on-failure
+#    depends_on:
+#      - threadservice
+      
   gateway:
     container_name: gateway
-    image: gateway #kvdhoogenhof/forumapp-api
-    #image: kvdhoogenhof/forumapp-api
-    ports:
-      - 5001:8080
-      - 5000:8081
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:8080;http://+:8081
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gateway.pfx
+    build: .
+#    image: openresty/openresty:latest
+    ports: 
+      - 5001:80
     volumes:
-      - ~/.aspnet/https:/https:ro
-    restart: on-failure
+      - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
     depends_on:
+      - authservice
       - threadservice
+      - postservice
+      - commentservice
 
   authservice:
     container_name: authservice
