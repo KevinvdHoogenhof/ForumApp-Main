@@ -7,9 +7,10 @@ title Forum application C3 model AccountService
 !define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
 !include DEVICONS/dotnet.puml
 !include DEVICONS/postgresql.puml
+!include DEVICONS/nginx.puml
 !include FONTAWESOME/users.puml
 
-Container(api, "API gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")
+Container(api, "API gateway", "OpenResty", "Handles client requests and manages the routing of requests to the microservices", $sprite="nginx")
 
 System_Boundary(ams,"AccountService"){
     Component(acontroller, "Account controller", "Controller")

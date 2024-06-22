@@ -1,24 +1,61 @@
 version: '3.4'
 
 services:
+#  gateway:
+#    container_name: gateway
+#    image: gateway #kvdhoogenhof/forumapp-api
+#    #image: kvdhoogenhof/forumapp-api
+#    ports:
+#      - 5001:8080
+#      - 5000:8081
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#      - ASPNETCORE_URLS=https://+:8080;http://+:8081
+#      - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
+#      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gateway.pfx
+#    volumes:
+#      - ~/.aspnet/https:/https:ro
+#    restart: on-failure
+#    depends_on:
+#      - threadservice
+      
   gateway:
     container_name: gateway
-    #image: gateway #kvdhoogenhof/forumapp-api
-    image: kvdhoogenhof/forumapp-api
-    ports:
-      - 5001:8080
-      - 5000:8081
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:8080;http://+:8081
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/gateway.pfx
+    build: .
+#    image: openresty/openresty:latest
+    ports: 
+      - 5001:80
     volumes:
-      - ~/.aspnet/https:/https:ro
+      - ./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+    depends_on:
+      - authservice
+      - threadservice
+      - postservice
+      - commentservice
+
+  authservice:
+    container_name: authservice
+    image: authservice
+    environment:
+      - DATABASE_URL=$AuthDBConnString
+      - KAFKA_SERVER_URL=$KafkaConnString
+    ports:
+      - "6001:5000"
     restart: on-failure
     depends_on:
-      - threadservice
-      
+      - authdb
+       
+  authdb:
+    container_name: authdb
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=$PostgresAuthDBPW
+      - POSTGRES_DB=authdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - 'adata:/var/lib/postgresql/data'
+ 
   threadservice:
     container_name: threadservice
     image: threadservice #kvdhoogenhof/forumapp-threads
@@ -27,13 +64,14 @@ services:
       - 9001:8080
       - 9000:8081
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Release
       - ASPNETCORE_URLS=https://+:8080;http://+:8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=$CertificatePW
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/threadservice.pfx
       - "ConnectionStrings__MongoDB=$ThreadDBConnString"
       - "ProducerConfig__BootstrapServers=$KafkaConnString"
       - "ConsumerConfig__BootstrapServers=$KafkaConnString"
+      - "ConsumerConfig__GroupId=Threadservice"
     volumes:
       - ~/.aspnet/https:/https:ro
     restart: on-failure
@@ -50,8 +88,8 @@ services:
 
   postservice:
     container_name: postservice
-    #image: postservice #kvdhoogenhof/forumapp-posts
-    image: kvdhoogenhof/forumapp-posts
+    image: postservice #kvdhoogenhof/forumapp-posts
+    #image: kvdhoogenhof/forumapp-posts
     ports:
       - 8001:8080
       - 8000:8081
@@ -63,6 +101,7 @@ services:
       - "ConnectionStrings__MongoDB=$PostDBConnString"
       - "ProducerConfig__BootstrapServers=$KafkaConnString"
       - "ConsumerConfig__BootstrapServers=$KafkaConnString"
+      - "ConsumerConfig__GroupId=Postservice"
     volumes:
       - ~/.aspnet/https:/https:ro
     restart: on-failure
@@ -79,8 +118,8 @@ services:
 
   commentservice:
     container_name: commentservice
-    #image: commentservice #kvdhoogenhof/forumapp-comments
-    image: kvdhoogenhof/forumapp-comments
+    image: commentservice #kvdhoogenhof/forumapp-comments
+    #image: kvdhoogenhof/forumapp-comments
     ports:
       - 7001:8080
       - 7000:8081
@@ -92,6 +131,7 @@ services:
       - "ConnectionStrings__MongoDB=$CommentDBConnString"
       - "ProducerConfig__BootstrapServers=$KafkaConnString"
       - "ConsumerConfig__BootstrapServers=$KafkaConnString"
+      - "ConsumerConfig__GroupId=Commentservice"
     volumes:
       - ~/.aspnet/https:/https:ro
     restart: on-failure
@@ -123,7 +163,7 @@ services:
       KAFKA_LISTENERS: LISTENER_DOCKER_INTERNAL://:29092,LISTENER_DOCKER_EXTERNAL://:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "updatethreadname:1:1,newpost:1:1,updatepostname:1:1"
+      KAFKA_CREATE_TOPICS: "updatethreadname:1:1,newpost:1:1,updatepostname:1:1,newcomment:1:1,updateaccountname:1:1,accountdeleted:2:1"
       
   prometheus:
     container_name: prometheus
@@ -152,11 +192,12 @@ services:
     container_name: grafana
     image: grafana/grafana:6.1.6
     environment:
-        - GF_SECURITY_ADMIN_PASSWORD=pass
+        - GF_SECURITY_ADMIN_PASSWORD=$GrafanaAdminPW
     ports:
         - "3030:3000"
 
 volumes:
+  adata:
   tdata:
   pdata:
   cdata:

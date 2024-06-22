@@ -10,6 +10,7 @@ title Forum application C2 model
 !include DEVICONS/python.puml
 !include DEVICONS/postgresql.puml
 !include DEVICONS/mongodb.puml
+!include DEVICONS/nginx.puml
 !include FONTAWESOME/users.puml
 
 Person(user, "User", "User of the application", $sprite="users")
@@ -18,7 +19,7 @@ Person(admin, "Admin", "Manages the application")
 Container(frontend, "Frontend", "react", "Frontend user interface", $sprite="react")
 Container(frontendadmin, "Admin frontend", "react", "Frontend admin interface", $sprite="react")
 
-Container(api, "API Gateway", "ASP.NET", "Handles client requests and manages the routing of requests to the microservices", $sprite="dotnet")
+Container(api, "API Gateway", "OpenResty", "Handles client requests and manages the routing of requests to the microservices", $sprite="nginx")
 
 System_Boundary(ms, "Microservices", "Back-end services"){
 Container(authservice, "AuthService", "ASP.NET", "Authentication & Authorization", $sprite="python")

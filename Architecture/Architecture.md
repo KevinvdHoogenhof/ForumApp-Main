@@ -8,7 +8,7 @@ In the image below you can find an overview of the status of my project.
 
 ![Project status C2 model](./C4_Models/Architecture_C2_project_status.png "Project status C2 model")
 
-In this image you can see that the services have different colors. Blue means not yet started on that service, Green means finished, Orange means mostly finished and Yellow means that the basic/initial version is working.
+All of the services in this images have been finished and are integrated with each other. At first I used colors to highlight the status of the services (Green means finished, Orange means mostly finished and Yellow means that the basic/initial version is working). Since everything that I wanted to make in my project is finished I decided to remove the colors entirely.
 
 ## C1: Context
 
